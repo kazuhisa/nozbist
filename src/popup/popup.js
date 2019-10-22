@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import App from './App';
+import './milligram.min.css';
 
 global.browser = require('webextension-polyfill');
 Vue.prototype.$browser = global.browser;
