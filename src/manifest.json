@@ -3,6 +3,10 @@
   "description": "A Vue.js web extension",
   "version": null,
   "manifest_version": 2,
+  "oauth2": {
+    "client_id": "c09481e1e01e60cc585ba6631277980b6f17dcda",
+    "scopes": ["https://api.nozbe.com:3000/login"]
+  },
   "icons": {
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
@@ -12,12 +16,11 @@
     "default_popup": "popup/popup.html"
   },
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "scripts": ["background.js"]
   },
   "options_ui": {
     "page": "options/options.html",
     "chrome_style": true
-  }
+  },
+  "permissions": ["identity"]
 }
