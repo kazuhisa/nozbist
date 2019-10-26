@@ -17,8 +17,9 @@ export default {
           url: 'https://api.nozbe.com:3000/login?client_id=c09481e1e01e60cc585ba6631277980b6f17dcda',
           interactive: true,
         },
-        responseUrl => {
-          // 後述
+        function(redirect_url) {
+          let params = new URLSearchParams(redirect_url.match(/\?.*/)[0].substring(1));
+          console.log(params.get('access_token'));
         }
       );
     },
