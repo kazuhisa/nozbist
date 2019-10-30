@@ -1,14 +1,21 @@
 <template>
   <div>
     <h3>Nozbe Chrome Extension</h3>
-    <button v-on:click="login">Login</button>
+    <div v-if="access_token">
+      logged in.
+    </div>
+    <div v-else>
+      <button v-on:click="login">Login</button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      access_token: localStorage.getItem('access_token'),
+    };
   },
   methods: {
     login(event) {
@@ -19,7 +26,7 @@ export default {
         },
         function(redirect_url) {
           let params = new URLSearchParams(redirect_url.match(/\?.*/)[0].substring(1));
-          console.log(params.get('access_token'));
+          localStorage.setItem('access_token', params.get('access_token'));
         }
       );
     },
