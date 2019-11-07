@@ -1,10 +1,13 @@
 <template>
   <div>
-    <h3>Nozbe Chrome Extension</h3>
     <div v-if="access_token">
-      logged in.
+      <p>
+        <!-- タイトルとURLを表示 -->
+        {{ title }}
+      </p>
     </div>
     <div v-else>
+      <h3>Nozbe Chrome Extension</h3>
       <button v-on:click="login">Login</button>
     </div>
   </div>
@@ -12,10 +15,8 @@
 
 <script>
 export default {
-  data() {
-    return {
-      access_token: localStorage.getItem('access_token'),
-    };
+  data: function() {
+    return { title: '' };
   },
   methods: {
     login(event) {
@@ -30,6 +31,15 @@ export default {
         }
       );
     },
+    access_token() {
+      localStorage.getItem('access_token');
+    },
+    set_title(tab) {
+      this.title = tab[0].title;
+    },
+  },
+  created() {
+    chrome.tabs.query({ active: true, currentWindow: true }, this.set_title);
   },
 };
 </script>
