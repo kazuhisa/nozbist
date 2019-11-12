@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div v-if="access_token">
+    <div v-if="access_token()">
       <fieldset>
         <label for="titleField">title</label>
         <input v-model="title" type="text" id="titleField" />
         <label for="commentField">comment</label>
         <textarea v-model="url" id="commentField"> </textarea>
-        <button type="button" name="addRecord">
+        <button v-on:click="post_task" type="button" name="addRecord">
           Adding a new task.
         </button>
       </fieldset>
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data: function() {
     return {
@@ -40,11 +42,37 @@ export default {
       );
     },
     access_token() {
-      localStorage.getItem('access_token');
+      return localStorage.getItem('access_token');
     },
     set_title(tab) {
       this.title = tab[0].title;
       this.url = tab[0].url;
+    },
+    post_task() {
+      let params = new URLSearchParams();
+      params.append('name', this.title);
+      axios
+        .post('https://api.nozbe.com:3000/task', params, {
+          headers: {
+            Authorization: this.access_token(),
+          },
+        })
+        .then(function(response) {
+          let params = new URLSearchParams();
+          params.append('id', response.data.id);
+          params.append('type', 'markdown');
+          params.append('body', this.url);
+          axios
+            .post('https://api.nozbe.com:3000/task/comment', params, {
+              headers: {
+                Authorization: this.access_token(),
+              },
+            })
+            .then(function() {
+              window.close();
+            });
+        })
+        .catch(function() {});
     },
   },
   created() {
