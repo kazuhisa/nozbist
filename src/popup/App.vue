@@ -5,7 +5,7 @@
         <label for="titleField">title</label>
         <input v-model="title" type="text" id="titleField" />
         <label for="commentField">comment</label>
-        <textarea v-model="url" id="commentField"> </textarea>
+        <textarea v-model="comment" id="commentField"> </textarea>
         <button v-on:click="post_task" type="button" name="addRecord">
           Adding a new task.
         </button>
@@ -22,10 +22,10 @@
 import axios from 'axios';
 
 export default {
-  data: function() {
+  data() {
     return {
       title: '',
-      url: '',
+      comment: '',
     };
   },
   methods: {
@@ -35,7 +35,7 @@ export default {
           url: 'https://api.nozbe.com:3000/login?client_id=c09481e1e01e60cc585ba6631277980b6f17dcda',
           interactive: true,
         },
-        function(redirect_url) {
+        redirect_url => {
           let params = new URLSearchParams(redirect_url.match(/\?.*/)[0].substring(1));
           localStorage.setItem('access_token', params.get('access_token'));
         }
@@ -44,9 +44,9 @@ export default {
     access_token() {
       return localStorage.getItem('access_token');
     },
-    set_title(tab) {
+    set_form(tab) {
       this.title = tab[0].title;
-      this.url = tab[0].url;
+      this.comment = tab[0].url;
     },
     post_task() {
       let params = new URLSearchParams();
@@ -58,29 +58,31 @@ export default {
           },
         })
         .then(this.post_comment)
-        .catch(function() {});
+        .catch(result => {
+          console.log(result);
+        });
     },
     post_comment(response) {
       let params = new URLSearchParams();
       params.append('task_id', response.data.id);
       params.append('type', 'markdown');
-      params.append('body', this.url);
+      params.append('body', this.comment);
       axios
         .post('https://api.nozbe.com:3000/task/comment', params, {
           headers: {
             Authorization: this.access_token(),
           },
         })
-        .then(function() {
+        .then(() => {
           window.close();
         })
-        .catch(function(result) {
+        .catch(result => {
           console.log(result);
         });
     },
   },
   created() {
-    chrome.tabs.query({ active: true, currentWindow: true }, this.set_title);
+    chrome.tabs.query({ active: true, currentWindow: true }, this.set_form);
   },
 };
 </script>
