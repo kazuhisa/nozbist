@@ -57,22 +57,26 @@ export default {
             Authorization: this.access_token(),
           },
         })
-        .then(function(response) {
-          let params = new URLSearchParams();
-          params.append('id', response.data.id);
-          params.append('type', 'markdown');
-          params.append('body', this.url);
-          axios
-            .post('https://api.nozbe.com:3000/task/comment', params, {
-              headers: {
-                Authorization: this.access_token(),
-              },
-            })
-            .then(function() {
-              window.close();
-            });
-        })
+        .then(this.post_comment)
         .catch(function() {});
+    },
+    post_comment(response) {
+      let params = new URLSearchParams();
+      params.append('task_id', response.data.id);
+      params.append('type', 'markdown');
+      params.append('body', this.url);
+      axios
+        .post('https://api.nozbe.com:3000/task/comment', params, {
+          headers: {
+            Authorization: this.access_token(),
+          },
+        })
+        .then(function() {
+          window.close();
+        })
+        .catch(function(result) {
+          console.log(result);
+        });
     },
   },
   created() {
