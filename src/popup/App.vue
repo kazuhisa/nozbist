@@ -44,13 +44,9 @@ export default {
     access_token() {
       return localStorage.getItem('access_token');
     },
-    set_form(tab) {
-      this.title = tab[0].title;
-      this.comment = tab[0].url;
-    },
     post_task() {
       let params = new URLSearchParams();
-      params.append('name', this.title);
+      params.append('name', encodeURI(this.title));
       axios
         .post('https://api.nozbe.com:3000/task', params, {
           headers: {
@@ -66,7 +62,7 @@ export default {
       let params = new URLSearchParams();
       params.append('task_id', response.data.id);
       params.append('type', 'markdown');
-      params.append('body', this.comment);
+      params.append('body', encodeURI(this.comment));
       axios
         .post('https://api.nozbe.com:3000/task/comment', params, {
           headers: {
@@ -82,7 +78,10 @@ export default {
     },
   },
   created() {
-    chrome.tabs.query({ active: true, currentWindow: true }, this.set_form);
+    chrome.tabs.query({ active: true, currentWindow: true }, tab => {
+      this.title = tab[0].title;
+      this.comment = tab[0].url;
+    });
   },
 };
 </script>
