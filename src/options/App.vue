@@ -4,6 +4,16 @@
     <div v-if="access_token()">
       <button v-on:click="logout">logout</button>
     </div>
+    <div>
+      Author: Kazuhisa Yamamoto
+    </div>
+    <div>Github: <a href="https://github.com/kazuhisa/nozbist">kazuhisa/nozbist</a></div>
+    <div>
+      Icons made by
+      <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a>
+      from
+      <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+    </div>
   </div>
 </template>
 
