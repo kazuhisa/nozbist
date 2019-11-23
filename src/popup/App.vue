@@ -32,7 +32,7 @@ export default {
     login(event) {
       chrome.identity.launchWebAuthFlow(
         {
-          url: 'https://api.nozbe.com:3000/login?client_id=3d22b033024918c4a9ebb286803b979398bba006',
+          url: 'https://api.nozbe.com:3000/login?client_id=c09481e1e01e60cc585ba6631277980b6f17dcda',
           interactive: true,
         },
         redirect_url => {
