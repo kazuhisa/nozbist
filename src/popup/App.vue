@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div v-if="access_token()">
+    <div v-if="accessToken()">
       <fieldset>
         <label for="titleField">title</label>
         <input v-model="title" type="text" id="titleField" />
         <label for="commentField">comment</label>
         <textarea v-model="comment" id="commentField"> </textarea>
-        <button v-on:click="post_task" type="button" name="addRecord">
+        <button v-on:click="postTask" type="button" name="addRecord">
           Adding a new task.
         </button>
       </fieldset>
@@ -32,7 +32,7 @@ export default {
     login(event) {
       chrome.identity.launchWebAuthFlow(
         {
-          url: 'https://api.nozbe.com:3000/login?client_id=c09481e1e01e60cc585ba6631277980b6f17dcda',
+          url: 'https://api.nozbe.com:3000/login?client_id=3d22b033024918c4a9ebb286803b979398bba006',
           interactive: true,
         },
         redirect_url => {
@@ -41,24 +41,24 @@ export default {
         }
       );
     },
-    access_token() {
+    accessToken() {
       return localStorage.getItem('access_token');
     },
-    post_task() {
+    postTask() {
       let params = new URLSearchParams();
       params.append('name', encodeURI(this.title));
       axios
         .post('https://api.nozbe.com:3000/task', params, {
           headers: {
-            Authorization: this.access_token(),
+            Authorization: this.accessToken(),
           },
         })
-        .then(this.post_comment)
+        .then(this.postComment)
         .catch(result => {
           console.log(result);
         });
     },
-    post_comment(response) {
+    postComment(response) {
       let params = new URLSearchParams();
       params.append('task_id', response.data.id);
       params.append('type', 'markdown');
@@ -66,7 +66,7 @@ export default {
       axios
         .post('https://api.nozbe.com:3000/task/comment', params, {
           headers: {
-            Authorization: this.access_token(),
+            Authorization: this.accessToken(),
           },
         })
         .then(() => {
