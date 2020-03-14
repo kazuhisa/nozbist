@@ -10,9 +10,10 @@ const config = {
   mode: process.env.NODE_ENV,
   context: __dirname + '/src',
   entry: {
-    'background': './background.js',
+    background: './background.js',
     'popup/popup': './popup/popup.js',
     'options/options': './options/options.js',
+    content: './content.js',
   },
   output: {
     path: __dirname + '/dist',
@@ -79,7 +80,7 @@ const config = {
       {
         from: 'manifest.json',
         to: 'manifest.json',
-        transform: (content) => {
+        transform: content => {
           const jsonContent = JSON.parse(content);
           jsonContent.version = version;
 

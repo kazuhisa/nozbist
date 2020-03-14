@@ -2,9 +2,13 @@
   <div>
     <div v-if="accessToken()">
       <fieldset>
-        <label for="titleField">title</label>
+        <label for="titleField">Title</label>
         <input v-model="title" type="text" id="titleField" />
-        <label for="commentField">comment</label>
+        <label for="dateField">Date</label>
+        <select v-model="dateField" name="dateField" id="dateField">
+          <option v-for="(op, i) in dateOptions" :key="i" :value="op.match">{{ op.match }}</option>
+        </select>
+        <label for="commentField">Comment</label>
         <textarea v-model="comment" id="commentField"> </textarea>
         <button v-on:click="postTask" type="button" name="addRecord">
           Adding a new task.
@@ -19,13 +23,18 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import axios from 'axios';
+import dateParser from 'node-date-parser';
+import { findDates as extractDate } from 'find-dates';
 
 export default {
   data() {
     return {
       title: '',
       comment: '',
+      dateField: '',
+      dateOptions: null,
     };
   },
   methods: {
@@ -47,6 +56,7 @@ export default {
     postTask() {
       let params = new URLSearchParams();
       params.append('name', encodeURI(this.title));
+      params.append('dateTime', dateParser(this.dateField));
       axios
         .post('https://api.nozbe.com:3000/task', params, {
           headers: {
@@ -81,6 +91,20 @@ export default {
     chrome.tabs.query({ active: true, currentWindow: true }, tab => {
       this.title = tab[0].title;
       this.comment = tab[0].url;
+      let dates = null;
+      var bkg = chrome.extension.getBackgroundPage();
+      try {
+        chrome.tabs.sendMessage(tab[0].id, { type: 'from_popup' }, {}, msg => {
+          bkg.console.log(msg);
+          msg = msg || {};
+          dates = extractDate(msg);
+          bkg.console.log(dates);
+          this.dateOptions = dates;
+          this.dateField = dates[0].match;
+        });
+      } catch (e) {
+        bkg.console.log('tab error', e);
+      }
     });
   },
 };
