@@ -6,12 +6,12 @@
         <input v-model="title" type="text" id="titleField" />
         <label for="dateField">Date</label>
         <select v-model="dateField" name="dateField" id="dateField">
-          <option v-for="(op, i) in dateOptions" :key="i" :value="op.match">{{ op.match }}</option>
+          <option v-for="(op, i) in dateOptions" :key="i" :value="op" :selected="i === 0">{{ op }}</option>
         </select>
         <label for="commentField">Comment</label>
         <textarea v-model="comment" id="commentField"> </textarea>
         <button v-on:click="postTask" type="button" name="addRecord">
-          Adding a new task.
+          Add a new task
         </button>
       </fieldset>
     </div>
@@ -23,10 +23,12 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import axios from 'axios';
-import dateParser from 'node-date-parser';
-import { findDates as extractDate } from 'find-dates';
+import parseDates from 'parse-dates';
+import moment from 'moment';
+import stripHtml from 'string-strip-html';
+
+const bkg = chrome.extension.getBackgroundPage();
 
 export default {
   data() {
@@ -45,6 +47,7 @@ export default {
           interactive: true,
         },
         redirect_url => {
+          // eslint-disable-line
           let params = new URLSearchParams(redirect_url.match(/\?.*/)[0].substring(1));
           localStorage.setItem('access_token', params.get('access_token'));
         }
@@ -56,7 +59,9 @@ export default {
     postTask() {
       let params = new URLSearchParams();
       params.append('name', encodeURI(this.title));
-      params.append('dateTime', dateParser(this.dateField));
+      if (this.dateField) {
+        params.append('datetime', encodeURI(moment(this.dateField).format('YYYY-MM-DD HH:mm:ss')));
+      }
       axios
         .post('https://api.nozbe.com:3000/task', params, {
           headers: {
@@ -64,8 +69,8 @@ export default {
           },
         })
         .then(this.postComment)
-        .catch(result => {
-          console.log(result);
+        .catch(error => {
+          bkg.console.error(error);
         });
     },
     postComment(response) {
@@ -82,8 +87,8 @@ export default {
         .then(() => {
           window.close();
         })
-        .catch(result => {
-          console.log(result);
+        .catch(error => {
+          bkg.console.error(error);
         });
     },
   },
@@ -92,15 +97,12 @@ export default {
       this.title = tab[0].title;
       this.comment = tab[0].url;
       let dates = null;
-      var bkg = chrome.extension.getBackgroundPage();
       try {
         chrome.tabs.sendMessage(tab[0].id, { type: 'from_popup' }, {}, msg => {
-          bkg.console.log(msg);
-          msg = msg || {};
-          dates = extractDate(msg);
-          bkg.console.log(dates);
+          msg = stripHtml(msg) || '';
+          dates = parseDates(msg).dates;
           this.dateOptions = dates;
-          this.dateField = dates[0].match;
+          this.dateField = dates[0];
         });
       } catch (e) {
         bkg.console.log('tab error', e);
