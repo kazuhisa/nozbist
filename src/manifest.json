@@ -1,6 +1,6 @@
 {
   "name": "nozbist",
-  "description": "A Vue.js web extension",
+  "description": "Nozbist is Nozbe chrome extension.",
   "version": "1.2.0",
   "manifest_version": 2,
   "icons": {
