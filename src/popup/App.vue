@@ -2,12 +2,12 @@
   <div>
     <div v-if="accessToken()">
       <fieldset>
-        <label for="titleField">title</label>
+        <label for="titleField">Title</label>
         <input v-model="title" type="text" id="titleField" />
-        <label for="commentField">comment</label>
+        <label for="commentField">Comment</label>
         <textarea v-model="comment" id="commentField"> </textarea>
         <button v-on:click="postTask" type="button" name="addRecord">
-          Adding a new task.
+          Add a new task
         </button>
       </fieldset>
     </div>
