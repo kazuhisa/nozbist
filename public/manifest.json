@@ -1,16 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "GitHub Language Stats",
-  "description": "An extension that displays user statistics and ranking information for your language on the GitHub user page.",
-  "version": "1.1",
+  "name": "nozbist",
+  "description": "Nozbist is Nozbe chrome extension.",
+  "version": "2.0",
   "action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
   },
   "permissions": [
-    "tabs"
+    "tabs",
+    "identity"
   ],
   "host_permissions": [
-    "https://github-readme-stats.vercel.app/*"
+    "https://api.nozbe.com:3000/*"
   ]
 }

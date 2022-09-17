@@ -80,24 +80,9 @@ const Popup = () => {
         <Box w="540px">
           <Box bg="#4299E1" w="100%" p={4} color="white">
             <Heading as="h3" size="xl" isTruncated>
-              GitHub Language Stats Extension
+              Nozbist
             </Heading>
           </Box>
-          <Box p={4}>
-            <div dangerouslySetInnerHTML={{ __html: currentStats }} />
-            <div dangerouslySetInnerHTML={{ __html: currentTopLanguage }} />
-          </Box>
-          <Box pb={2} pl={4} pr={4}>
-            <form onSubmit={onSubmit}>
-              <FormControl id="username" isInvalid={!!errors.username} isRequired>
-                <FormLabel>GitHub username</FormLabel>
-                <Input placeholder="GitHub username" {...register('username', { required: true })} />
-                <FormErrorMessage>{errors.username && 'GitHub username is required'}</FormErrorMessage>
-              </FormControl>
-              <Button mt={2} bg="#4299E1" color="white" isLoading={formState.isSubmitting} type="submit">Submit</Button>
-            </form>
-          </Box>
-
         </Box>
       </ChakraProvider>
     </>
