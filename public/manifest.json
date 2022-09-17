@@ -12,7 +12,6 @@
     "identity"
   ],
   "host_permissions": [
-    "*://api.nozbe.com:3000/*"
-  ],
-  "key": "jhflbfcjhpgoipinddbfikhcnimejhbn"
+    "https://api.nozbe.com:3000/*"
+  ]
 }

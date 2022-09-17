@@ -74,6 +74,8 @@ const Popup = () => {
     }
   }, [username]);
 
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('access_token') || '');
+
   const login = () => {
     chrome.identity.launchWebAuthFlow(
       {
@@ -83,12 +85,13 @@ const Popup = () => {
       },
       responseUrl => {
         if (responseUrl != null) {
-          const all_params = responseUrl.match(/\?.*/);
-          if (all_params != null) {
-            const params = new URLSearchParams(all_params[0].substring(1));
-            const access_token = params.get('access_token');
-            if (access_token != null) {
-              localStorage.setItem('access_token', access_token);
+          const allParams = responseUrl.match(/\?.*/);
+          if (allParams != null) {
+            const params = new URLSearchParams(allParams[0].substring(1));
+            const token = params.get('access_token');
+            if (token != null) {
+              localStorage.setItem('access_token', token);
+              setAccessToken(token);
             }
           }
         }
@@ -105,6 +108,7 @@ const Popup = () => {
               Nozbe Chrome Extension
             </Heading>
             <Button onClick={login}>Login</Button>
+            {accessToken && <p>Logged in</p>}
           </Box>
         </Box>
       </ChakraProvider>
