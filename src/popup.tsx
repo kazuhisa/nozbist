@@ -74,14 +74,37 @@ const Popup = () => {
     }
   }, [username]);
 
+  const login = () => {
+    chrome.identity.launchWebAuthFlow(
+      {
+        // url: 'https://api.nozbe.com:3000/login?client_id=c09481e1e01e60cc585ba6631277980b6f17dcda',
+        url: 'https://api.nozbe.com:3000/login?client_id=3d22b033024918c4a9ebb286803b979398bba006', // test
+        interactive: true,
+      },
+      responseUrl => {
+        if (responseUrl != null) {
+          const all_params = responseUrl.match(/\?.*/);
+          if (all_params != null) {
+            const params = new URLSearchParams(all_params[0].substring(1));
+            const access_token = params.get('access_token');
+            if (access_token != null) {
+              localStorage.setItem('access_token', access_token);
+            }
+          }
+        }
+      }
+    );
+  }
+
   return (
     <>
       <ChakraProvider>
         <Box w="540px">
-          <Box bg="#4299E1" w="100%" p={4} color="white">
-            <Heading as="h3" size="xl" isTruncated>
-              Nozbist
+          <Box>
+            <Heading>
+              Nozbe Chrome Extension
             </Heading>
+            <Button onClick={login}>Login</Button>
           </Box>
         </Box>
       </ChakraProvider>
